@@ -1,4 +1,4 @@
-package nl.bjornvanderlaan.springwebfluxkotlinfunctional
+package nl.bjornvanderlaan.springwebfluxkotlinfunctional.router
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
