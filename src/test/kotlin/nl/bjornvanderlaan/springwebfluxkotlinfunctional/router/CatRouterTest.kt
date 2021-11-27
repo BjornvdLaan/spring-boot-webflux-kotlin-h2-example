@@ -45,21 +45,8 @@ class CatRouterTest(
         every {
             repository.findAll()
         } returns flow {
-            emit(
-                Cat(
-                    name = "Catzo",
-                    type = "Japanese Bobtail",
-                    age = 5
-                )
-            )
-
-            emit(
-                Cat(
-                    name = "Obi",
-                    type = "Dutch Ringtail",
-                    age = 5
-                )
-            )
+            emit(aCat())
+            emit(anotherCat())
         }
 
         client
@@ -70,18 +57,7 @@ class CatRouterTest(
             .isOk
             .expectBodyList<CatDto>()
             .hasSize(2)
-            .contains(
-                CatDto(
-                    name = "Catzo",
-                    type = "Japanese Bobtail",
-                    age = 5
-                ),
-                CatDto(
-                    name = "Obi",
-                    type = "Dutch Ringtail",
-                    age = 5
-                )
-            )
+            .contains(aCat().toDto(), anotherCat().toDto())
     }
 
     @Test
@@ -276,11 +252,24 @@ class CatRouterTest(
 
     private fun aCat(
         id: Long = 1,
-        name: String = "Catzo",
+        name: String = "Obi",
+        type: String = "Dutch Ringtail",
+        age: Int = 3
+    ) =
+        Cat(
+            id = id,
+            name = name,
+            type = type,
+            age = age
+        )
+
+    private fun anotherCat(
+        id: Long = 1,
+        name: String = "Wan",
         type: String = "Japanese Bobtail",
         age: Int = 5
     ) =
-        Cat(
+        aCat(
             id = id,
             name = name,
             type = type,
