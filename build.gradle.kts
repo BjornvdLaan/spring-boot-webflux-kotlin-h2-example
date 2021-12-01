@@ -27,6 +27,7 @@ dependencies {
 	runtimeOnly("io.r2dbc:r2dbc-h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("io.mockk:mockk:1.10.2")
 	testImplementation("com.ninja-squad:springmockk:3.0.1")
 }
 

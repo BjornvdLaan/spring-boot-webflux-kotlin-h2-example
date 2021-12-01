@@ -6,15 +6,14 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.slot
 import kotlinx.coroutines.flow.flow
-import nl.bjornvanderlaan.springwebfluxkotlinfunctional.handler.CatHandler
 import nl.bjornvanderlaan.springwebfluxkotlinfunctional.model.Cat
 import nl.bjornvanderlaan.springwebfluxkotlinfunctional.model.CatDto
 import nl.bjornvanderlaan.springwebfluxkotlinfunctional.model.toDto
 import nl.bjornvanderlaan.springwebfluxkotlinfunctional.repository.CatRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
-import org.springframework.context.annotation.Import
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
@@ -22,13 +21,23 @@ import org.springframework.test.web.reactive.server.expectBodyList
 import org.springframework.web.reactive.function.BodyInserters.fromValue
 
 
-@WebFluxTest
-@Import(CatRouterConfiguration::class, CatHandler::class)
-class CatRouterTest(
-    @Autowired private val client: WebTestClient
+@SpringBootTest
+class BindToRouterVariantCatRouterTest(
+    @Autowired val configuration: CatRouterConfiguration
 ) {
     @MockkBean
     private lateinit var repository: CatRepository
+
+    private lateinit var client: WebTestClient
+
+    @BeforeEach
+    fun beforeEach() {
+        this.client = WebTestClient
+            .bindToRouterFunction(configuration.apiRouter())
+            .configureClient()
+            .baseUrl("/api/cats")
+            .build()
+    }
 
     @Test
     fun `Retrieve all cats`() {
@@ -41,7 +50,7 @@ class CatRouterTest(
 
         client
             .get()
-            .uri("/api/cats")
+            .uri("/")
             .exchange()
             .expectStatus()
             .isOk
@@ -61,7 +70,7 @@ class CatRouterTest(
 
         client
             .get()
-            .uri("/api/cats/2")
+            .uri("/2")
             .exchange()
             .expectStatus()
             .isOk
@@ -77,7 +86,7 @@ class CatRouterTest(
 
         client
             .get()
-            .uri("/api/cats/2")
+            .uri("/2")
             .exchange()
             .expectStatus()
             .isNotFound
@@ -94,7 +103,7 @@ class CatRouterTest(
 
         client
             .post()
-            .uri("/api/cats/")
+            .uri("/")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(aCat().toDto())
@@ -116,7 +125,7 @@ class CatRouterTest(
 
         client
             .post()
-            .uri("/api/cats/")
+            .uri("/")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .body(fromValue("{}"))
@@ -145,7 +154,7 @@ class CatRouterTest(
 
         client
             .put()
-            .uri("/api/cats/2")
+            .uri("/2")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(updatedCat)
@@ -169,7 +178,7 @@ class CatRouterTest(
 
         client
             .put()
-            .uri("/api/cats/2")
+            .uri("/2")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(updatedCat)
@@ -189,7 +198,7 @@ class CatRouterTest(
 
         client
             .put()
-            .uri("/api/cats/2")
+            .uri("/2")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .body(fromValue("{}"))
@@ -214,7 +223,7 @@ class CatRouterTest(
 
         client
             .delete()
-            .uri("/api/cats/2")
+            .uri("/2")
             .exchange()
             .expectStatus()
             .isNoContent
@@ -232,7 +241,7 @@ class CatRouterTest(
 
         client
             .delete()
-            .uri("/api/cats/2")
+            .uri("/2")
             .exchange()
             .expectStatus()
             .isNotFound

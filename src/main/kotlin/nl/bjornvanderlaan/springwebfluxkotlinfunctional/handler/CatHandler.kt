@@ -19,7 +19,8 @@ class CatHandler(
     private val catRepository: CatRepository
 ) {
     suspend fun getAll(req: ServerRequest): ServerResponse {
-        return ServerResponse.ok()
+        return ServerResponse
+            .ok()
             .contentType(MediaType.APPLICATION_JSON)
             .bodyAndAwait(
                 catRepository.findAll().map { it.toDto() }
