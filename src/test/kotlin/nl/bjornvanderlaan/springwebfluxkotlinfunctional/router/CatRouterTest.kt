@@ -52,11 +52,10 @@ class CatRouterTest(
 
     @Test
     fun `Retrieve cat by existing id`() {
-        val requestedId = slot<Long>()
         coEvery {
-            repository.findById(capture(requestedId))
+            repository.findById(any())
         } coAnswers {
-            aCat(id = requestedId.captured)
+            aCat()
         }
 
         client
@@ -127,11 +126,10 @@ class CatRouterTest(
 
     @Test
     fun `Update a cat`() {
-        val requestedId = slot<Long>()
         coEvery {
-            repository.findById(capture(requestedId))
+            repository.findById(any())
         } coAnswers {
-            aCat(id = requestedId.captured)
+            aCat()
         }
 
         val savedCat = slot<Cat>()
@@ -180,11 +178,10 @@ class CatRouterTest(
 
     @Test
     fun `Update cat with empty request body id`() {
-        val requestedId = slot<Long>()
         coEvery {
-            repository.findById(capture(requestedId))
+            repository.findById(any())
         } coAnswers {
-            aCat(id = requestedId.captured)
+            aCat()
         }
 
         client
@@ -241,26 +238,22 @@ class CatRouterTest(
     }
 
     private fun aCat(
-        id: Long = 1,
         name: String = "Obi",
         type: String = "Dutch Ringtail",
         age: Int = 3
     ) =
         Cat(
-            id = id,
             name = name,
             type = type,
             age = age
         )
 
     private fun anotherCat(
-        id: Long = 1,
         name: String = "Wan",
         type: String = "Japanese Bobtail",
         age: Int = 5
     ) =
         aCat(
-            id = id,
             name = name,
             type = type,
             age = age
