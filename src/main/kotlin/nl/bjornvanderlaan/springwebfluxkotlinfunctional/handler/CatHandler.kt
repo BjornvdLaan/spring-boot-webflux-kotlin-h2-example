@@ -57,8 +57,11 @@ class CatHandler(
     suspend fun update(req: ServerRequest): ServerResponse {
         val id = req.pathVariable("id")
 
-        val receivedCat = req.awaitBodyOrNull(CatDto::class) ?: return ServerResponse.badRequest().buildAndAwait()
-        val existingCat = catRepository.findById(id.toLong()) ?: return ServerResponse.notFound().buildAndAwait()
+        val receivedCat = req.awaitBodyOrNull(CatDto::class)
+            ?: return ServerResponse.badRequest().buildAndAwait()
+
+        val existingCat = catRepository.findById(id.toLong())
+            ?: return ServerResponse.notFound().buildAndAwait()
 
         return ServerResponse
             .ok()
@@ -69,7 +72,6 @@ class CatHandler(
                 ).toDto()
             )
     }
-
 
     suspend fun delete(req: ServerRequest): ServerResponse {
         val id = req.pathVariable("id")
